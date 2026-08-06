@@ -685,8 +685,17 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.umd.js"></script>
   <script src="js/supabase.js"></script>
   <script src="js/app.js"></script>
+  <script>
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('loginError');
+      if (el && !document.getElementById('appLayout').classList.contains('active')) {
+        el.textContent = 'Terjadi kesalahan: ' + (e.message || 'unknown error');
+        el.style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>
