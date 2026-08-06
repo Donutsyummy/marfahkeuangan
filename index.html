@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LaporanMRFH - Laporan Keuangan Profesional</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ==================== LOGIN PAGE ==================== -->
+  <div id="loginPage" class="login-page">
+    <div class="login-container">
+      <div class="login-card">
+        <div class="login-logo" id="loginLogoSide">
+          <img src="assets/logo.png" alt="Logo LaporanMRFH">
+        </div>
+        <h1 class="login-title">LaporanMRFH</h1>
+        <p class="login-subtitle">Sistem Laporan Keuangan Profesional</p>
+        <form id="loginForm">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" class="form-input" id="username" placeholder="Masukkan username" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-input" id="password" placeholder="Masukkan password" required>
+          </div>
+          <button type="submit" class="btn btn-gold">Masuk</button>
+          <div id="loginError" class="login-error">Username atau password salah!</div>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== APP LAYOUT ==================== -->
+  <div id="appLayout" class="app-layout">
+
+    <!-- Sidebar Overlay (mobile) -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo" id="sidebarLogoSide">
+          <img src="assets/logo.png" alt="Logo LaporanMRFH">
+        </div>
+        <div class="sidebar-brand">
+          LaporanMRFH
+          <small>Financial Reports</small>
+        </div>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar" id="userAvatar">A</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="userName">Administrator</div>
+          <div class="sidebar-user-role" id="userRole">admin</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">Menu Utama</div>
+        <div class="nav-item active" data-page="dashboard">
+          <span class="nav-icon">📊</span> Dashboard
+        </div>
+        <div class="nav-section">Kategori Laporan</div>
+        <div class="nav-item" data-page="penjualan">
+          <span class="nav-icon">💰</span> Penjualan
+          <span class="nav-badge" data-page="penjualan">0</span>
+        </div>
+        <div class="nav-item" data-page="kas">
+          <span class="nav-icon">🏦</span> Kas
+          <span class="nav-badge" data-page="kas">0</span>
+        </div>
+        <div class="nav-item" data-page="kebutuhan">
+          <span class="nav-icon">📋</span> Kebutuhan
+          <span class="nav-badge" data-page="kebutuhan">0</span>
+        </div>
+        <div class="nav-item" data-page="kerjasama">
+          <span class="nav-icon">🤝</span> Kerjasama
+          <span class="nav-badge" data-page="kerjasama">0</span>
+        </div>
+        <div class="nav-item" data-page="bulanan">
+          <span class="nav-icon">📅</span> Bulanan
+          <span class="nav-badge" data-page="bulanan">0</span>
+        </div>
+        <div class="nav-item" data-page="tahunan">
+          <span class="nav-icon">📆</span> Tahunan
+          <span class="nav-badge" data-page="tahunan">0</span>
+        </div>
+        <div class="nav-section">Lainnya</div>
+        <div class="nav-item" data-page="chat">
+          <span class="nav-icon">💬</span> Chat
+        </div>
+        <div class="nav-item" data-page="anggota">
+          <span class="nav-icon">👥</span> Anggota
+        </div>
+        <div class="nav-section">Pengaturan</div>
+        <div class="nav-item" data-page="aktivitas" style="display:none;">
+          <span class="nav-icon">📜</span> Aktivitas
+          <span class="nav-badge" data-page="aktivitas">0</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="logoutBtn" class="btn-logout">🚪 Keluar</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-bar">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button id="mobileMenuBtn" class="mobile-menu-btn">☰</button>
+          <h2 class="page-title" id="pageTitle">Laporan <span>Dashboard</span></h2>
+        </div>
+        <div class="page-actions">
+          <div class="logo-slot" style="width: 36px; height: 36px; padding: 4px;">
+            <img src="assets/logo.png" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+        </div>
+      </header>
+
+      <div class="page-content">
+
+        <!-- ==================== DASHBOARD ==================== -->
+        <section id="pageDashboard" class="page-section active">
+          <div class="stat-card" style="margin-bottom: 24px; background: linear-gradient(135deg, var(--black-3), var(--black-2)); border-color: var(--gold); text-align: center; padding: 32px;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 8px;">
+              <span style="font-size: 14px; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-weight: 600;" id="totalUangLabel">Total Uang Keseluruhan</span>
+              <button id="editTotalUangBtn" class="btn-icon" style="display:none; padding: 4px 8px; font-size: 14px;" title="Ubah total uang">✏️</button>
+            </div>
+            <div style="font-size: 42px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--gold);" id="statTotalUang">Rp 0</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">Dari penjualan & kerjasama</div>
+          </div>
+          <div class="dashboard-grid">
+            <div class="stat-card">
+              <div class="stat-icon">💰</div>
+              <div class="stat-value" id="statPenjualan">Rp 0</div>
+              <div class="stat-label">Total Untung Penjualan</div>
+              <div class="stat-desc">Dari seluruh transaksi penjualan</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🤝</div>
+              <div class="stat-value" id="statKerjasama">Rp 0</div>
+              <div class="stat-label">Total Untung Kerjasama</div>
+              <div class="stat-desc">Dari seluruh kerjasama</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📋</div>
+              <div class="stat-value" id="statKebutuhan">0 kebutuhan</div>
+              <div class="stat-label">Kebutuhan Tercatat</div>
+              <div class="stat-desc">Bisnis & Kerjasama</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🏦</div>
+              <div class="stat-value" style="color: var(--gold);" id="statKasSaldo">Rp 0</div>
+              <div class="stat-label">Saldo Kas</div>
+              <div class="stat-desc">Pemasukan - Pengeluaran</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📊</div>
+              <div class="stat-value" id="statTotal">0 entri</div>
+              <div class="stat-label">Total Entri</div>
+              <div class="stat-desc">Semua kategori laporan</div>
+            </div>
+          </div>
+
+          <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--gold);">Kategori Laporan</h3>
+          <div class="category-grid">
+            <div class="category-card" data-page="penjualan">
+              <div class="cat-icon">💰</div>
+              <div class="cat-name">Penjualan</div>
+              <div class="cat-count">Modal, Untung, Rugi</div>
+            </div>
+            <div class="category-card" data-page="kas">
+              <div class="cat-icon">🏦</div>
+              <div class="cat-name">Kas</div>
+              <div class="cat-count">Pemasukan & Pengeluaran</div>
+            </div>
+            <div class="category-card" data-page="kebutuhan">
+              <div class="cat-icon">📋</div>
+              <div class="cat-name">Kebutuhan</div>
+              <div class="cat-count">Bisnis & Kerjasama</div>
+            </div>
+            <div class="category-card" data-page="kerjasama">
+              <div class="cat-icon">🤝</div>
+              <div class="cat-name">Kerjasama</div>
+              <div class="cat-count">Untung, Bagi Hasil, Rugi</div>
+            </div>
+            <div class="category-card" data-page="bulanan">
+              <div class="cat-icon">📅</div>
+              <div class="cat-name">Bulanan</div>
+              <div class="cat-count">Laporan per Bulan</div>
+            </div>
+            <div class="category-card" data-page="tahunan">
+              <div class="cat-icon">📆</div>
+              <div class="cat-name">Tahunan</div>
+              <div class="cat-count">Laporan per Tahun</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== PENJUALAN ==================== -->
+        <section id="pagePenjualan" class="page-section">
+          <div class="data-form">
+            <h3>📝 Form Penjualan</h3>
+            <form id="formPenjualan">
+              <input type="hidden" id="pjId" value="">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Tanggal</label>
+                  <input type="date" class="form-input" id="pjTanggal" required>
+                </div>
+                <div class="form-group">
+                  <label>Modal (Rp)</label>
+                  <input type="number" class="form-input" id="pjModal" placeholder="Jumlah modal" min="0" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Produk yang Dijual</label>
+                  <input type="text" class="form-input" id="pjProduk" placeholder="Nama produk" required>
+                </div>
+                <div class="form-group">
+                  <label>Untung Bersih (Rp)</label>
+                  <input type="number" class="form-input" id="pjUntung" placeholder="Jumlah untung bersih" min="0" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Rugi (Rp)</label>
+                  <input type="number" class="form-input" id="pjRugi" placeholder="Jumlah rugi (jika ada)" min="0">
+                </div>
+                <div class="form-group">
+                  <label>Evaluasi</label>
+                  <input type="text" class="form-input" id="pjEvaluasi" placeholder="Catatan evaluasi">
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-gold" id="pjSubmit">Simpan Penjualan</button>
+                <button type="button" class="btn btn-outline" id="pjReset" onclick="document.getElementById('formPenjualan').reset(); document.getElementById('pjId').value=''; this.form.querySelector('button[type=submit]').textContent='Simpan Penjualan';">Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="data-table-wrapper">
+            <div class="data-table-header">
+              <h3>📋 Data Penjualan</h3>
+              <button class="btn-export" data-export="penjualan">📥 Export CSV</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Modal</th>
+                  <th>Produk</th>
+                  <th>Untung Bersih</th>
+                  <th>Rugi</th>
+                  <th>Evaluasi</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="penjualanTable">
+                <tr class="empty-row"><td colspan="7">Belum ada data penjualan.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ==================== KAS ==================== -->
+        <section id="pageKas" class="page-section">
+          <div class="recap-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="recap-item">
+              <div class="recap-label">Total Pemasukan</div>
+              <div class="recap-value positive" id="kasTotalMasuk">Rp 0</div>
+            </div>
+            <div class="recap-item">
+              <div class="recap-label">Total Pengeluaran</div>
+              <div class="recap-value negative" id="kasTotalKeluar">Rp 0</div>
+            </div>
+            <div class="recap-item" style="border-color: var(--gold);">
+              <div class="recap-label">Saldo Kas</div>
+              <div class="recap-value neutral" id="kasSaldo">Rp 0</div>
+            </div>
+          </div>
+          <div class="data-form">
+            <h3>🏦 Form Kas</h3>
+            <form id="formKas">
+              <input type="hidden" id="kasId" value="">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Tanggal</label>
+                  <input type="date" class="form-input" id="kasTanggal" required>
+                </div>
+                <div class="form-group">
+                  <label>Keterangan</label>
+                  <input type="text" class="form-input" id="kasKeterangan" placeholder="Deskripsi transaksi" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Jumlah (Rp)</label>
+                  <input type="number" class="form-input" id="kasJumlah" placeholder="Jumlah uang" min="0" required>
+                </div>
+                <div class="form-group">
+                  <label>Tipe</label>
+                  <select class="form-input" id="kasTipe" required>
+                    <option value="masuk">Pemasukan</option>
+                    <option value="keluar">Pengeluaran</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-gold" id="kasSubmit">Simpan Kas</button>
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('formKas').reset(); document.getElementById('kasId').value=''; document.getElementById('kasSubmit').textContent='Simpan Kas';">Reset</button>
+              </div>
+            </form>
+          </div>
+          <div class="data-table-wrapper">
+            <div class="data-table-header">
+              <h3>📋 Data Kas</h3>
+              <button class="btn-export" data-export="kas">📥 Export CSV</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Keterangan</th>
+                  <th>Jumlah</th>
+                  <th>Tipe</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="kasTable">
+                <tr class="empty-row"><td colspan="5">Belum ada data kas.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ==================== KEBUTUHAN ==================== -->
+        <section id="pageKebutuhan" class="page-section">
+          <div class="data-form">
+            <h3>📝 Form Kebutuhan</h3>
+            <form id="formKebutuhan">
+              <input type="hidden" id="kbId" value="">
+              <div class="form-group">
+                <label>Tanggal</label>
+                <input type="date" class="form-input" id="kbTanggal" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label style="color: var(--gold);">Bisnis Perlu</label>
+                  <input type="text" class="form-input" id="kbBisnisPerlu" placeholder="Apa yang dibutuhkan bisnis?" required>
+                </div>
+                <div class="form-group">
+                  <label style="color: var(--gold);">Untuk</label>
+                  <input type="text" class="form-input" id="kbBisnisUntuk" placeholder="Tujuan kebutuhan bisnis" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label style="color: var(--gold);">Kerjasama Perlu</label>
+                  <input type="text" class="form-input" id="kbKerjasamaPerlu" placeholder="Apa yang dibutuhkan kerjasama?" required>
+                </div>
+                <div class="form-group">
+                  <label style="color: var(--gold);">Untuk</label>
+                  <input type="text" class="form-input" id="kbKerjasamaUntuk" placeholder="Tujuan kebutuhan kerjasama" required>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-gold" id="kbSubmit">Simpan Kebutuhan</button>
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('formKebutuhan').reset(); document.getElementById('kbId').value=''; document.getElementById('kbSubmit').textContent='Simpan Kebutuhan';">Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="data-table-wrapper">
+            <div class="data-table-header">
+              <h3>📋 Data Kebutuhan</h3>
+              <button class="btn-export" data-export="kebutuhan">📥 Export CSV</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Bisnis Perlu</th>
+                  <th>Bisnis Untuk</th>
+                  <th>Kerjasama Perlu</th>
+                  <th>Kerjasama Untuk</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="kebutuhanTable">
+                <tr class="empty-row"><td colspan="6">Belum ada data kebutuhan.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ==================== KERJASAMA ==================== -->
+        <section id="pageKerjasama" class="page-section">
+          <div class="data-form">
+            <h3>📝 Form Kerjasama</h3>
+            <form id="formKerjasama">
+              <input type="hidden" id="ksId" value="">
+              <div class="form-group">
+                <label>Tanggal</label>
+                <input type="date" class="form-input" id="ksTanggal" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Untung Produk (Rp)</label>
+                  <input type="number" class="form-input" id="ksUntung" placeholder="Jumlah untung dari produk" min="0" required>
+                </div>
+                <div class="form-group">
+                  <label>Bagi Hasil (Rp)</label>
+                  <input type="number" class="form-input" id="ksBagiHasil" placeholder="Jumlah bagi hasil" min="0" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Rugi (Rp)</label>
+                  <input type="number" class="form-input" id="ksRugi" placeholder="Jumlah rugi (jika ada)" min="0">
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-gold" id="ksSubmit">Simpan Kerjasama</button>
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('formKerjasama').reset(); document.getElementById('ksId').value=''; document.getElementById('ksSubmit').textContent='Simpan Kerjasama';">Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="data-table-wrapper">
+            <div class="data-table-header">
+              <h3>📋 Data Kerjasama</h3>
+              <button class="btn-export" data-export="kerjasama">📥 Export CSV</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Untung Produk</th>
+                  <th>Bagi Hasil</th>
+                  <th>Rugi</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="kerjasamaTable">
+                <tr class="empty-row"><td colspan="5">Belum ada data kerjasama.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ==================== BULANAN ==================== -->
+        <section id="pageBulanan" class="page-section">
+          <div class="data-form">
+            <h3>📝 Form Laporan Bulanan</h3>
+            <form id="formBulanan">
+              <input type="hidden" id="blId" value="">
+              <div class="form-group">
+                <label>Periode (Bulan - Tahun)</label>
+                <input type="month" class="form-input" id="blPeriode" required>
+              </div>
+              <div class="form-row form-row-3">
+                <div class="form-group">
+                  <label style="color: #2ecc71;">Untung Keseluruhan (Rp)</label>
+                  <input type="number" class="form-input" id="blUntungKeseluruhan" placeholder="Total untung" min="0" required>
+                </div>
+                <div class="form-group">
+                  <label style="color: #e74c3c;">Rugi Keseluruhan (Rp)</label>
+                  <input type="number" class="form-input" id="blRugiKeseluruhan" placeholder="Total rugi" min="0" required>
+                </div>
+                <div class="form-group">
+                  <label style="color: #2ecc71;">Untung dari Bisnis (Rp)</label>
+                  <input type="number" class="form-input" id="blUntungBisnis" placeholder="Untung bisnis" min="0" required>
+                </div>
+              </div>
+              <div class="form-row form-row-3">
+                <div class="form-group">
+                  <label style="color: #e74c3c;">Rugi dari Bisnis (Rp)</label>
+                  <input type="number" class="form-input" id="blRugiBisnis" placeholder="Rugi bisnis" min="0">
+                </div>
+                <div class="form-group">
+                  <label style="color: #2ecc71;">Untung dari Kerjasama (Rp)</label>
+                  <input type="number" class="form-input" id="blUntungKerjasama" placeholder="Untung kerjasama" min="0" required>
+                </div>
+                <div class="form-group">
+                  <label style="color: #e74c3c;">Rugi dari Kerjasama (Rp)</label>
+                  <input type="number" class="form-input" id="blRugiKerjasama" placeholder="Rugi kerjasama" min="0">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label style="color: var(--gold);">Target Kedepan</label>
+                  <textarea class="form-input" id="blTarget" placeholder="Target untuk bulan depan" rows="2" style="resize: vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                  <label style="color: var(--gold);">Evaluasi</label>
+                  <textarea class="form-input" id="blEvaluasi" placeholder="Evaluasi bulan ini" rows="2" style="resize: vertical;"></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-gold" id="blSubmit">Simpan Laporan Bulanan</button>
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('formBulanan').reset(); document.getElementById('blId').value=''; document.getElementById('blSubmit').textContent='Simpan Laporan Bulanan';">Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="data-table-wrapper">
+            <div class="data-table-header">
+              <h3>📋 Data Laporan Bulanan</h3>
+              <button class="btn-export" data-export="bulanan">📥 Export CSV</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Periode</th>
+                  <th>Untung Keseluruhan</th>
+                  <th>Rugi Keseluruhan</th>
+                  <th>Untung Bisnis</th>
+                  <th>Rugi Bisnis</th>
+                  <th>Untung Kerjasama</th>
+                  <th>Rugi Kerjasama</th>
+                  <th>Target</th>
+                  <th>Evaluasi</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="bulananTable">
+                <tr class="empty-row"><td colspan="10">Belum ada laporan bulanan.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ==================== TAHUNAN ==================== -->
+        <section id="pageTahunan" class="page-section">
+          <div class="data-form">
+            <h3>📝 Form Laporan Tahunan</h3>
+            <form id="formTahunan">
+              <input type="hidden" id="thId" value="">
+              <div class="form-group">
+                <label>Tahun</label>
+                <input type="number" class="form-input" id="thTahun" placeholder="Contoh: 2026" min="2020" max="2100" required>
+              </div>
+              <div class="form-row form-row-3">
+                <div class="form-group">
+                  <label style="color: #2ecc71;">Untung Keseluruhan (Rp)</label>
+                  <input type="number" class="form-input" id="thUntungKeseluruhan" placeholder="Total untung" min="0" required>
+                </div>
+                <div class="form-group">
+                  <label style="color: #e74c3c;">Rugi Keseluruhan (Rp)</label>
+                  <input type="number" class="form-input" id="thRugiKeseluruhan" placeholder="Total rugi" min="0" required>
+                </div>
+                <div class="form-group">
+                  <label style="color: #2ecc71;">Untung dari Bisnis (Rp)</label>
+                  <input type="number" class="form-input" id="thUntungBisnis" placeholder="Untung bisnis" min="0" required>
+                </div>
+              </div>
+              <div class="form-row form-row-3">
+                <div class="form-group">
+                  <label style="color: #e74c3c;">Rugi dari Bisnis (Rp)</label>
+                  <input type="number" class="form-input" id="thRugiBisnis" placeholder="Rugi bisnis" min="0">
+                </div>
+                <div class="form-group">
+                  <label style="color: #2ecc71;">Untung dari Kerjasama (Rp)</label>
+                  <input type="number" class="form-input" id="thUntungKerjasama" placeholder="Untung kerjasama" min="0" required>
+                </div>
+                <div class="form-group">
+                  <label style="color: #e74c3c;">Rugi dari Kerjasama (Rp)</label>
+                  <input type="number" class="form-input" id="thRugiKerjasama" placeholder="Rugi kerjasama" min="0">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label style="color: var(--gold);">Target Kedepan</label>
+                  <textarea class="form-input" id="thTarget" placeholder="Target untuk tahun depan" rows="2" style="resize: vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                  <label style="color: var(--gold);">Evaluasi</label>
+                  <textarea class="form-input" id="thEvaluasi" placeholder="Evaluasi tahun ini" rows="2" style="resize: vertical;"></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-gold" id="thSubmit">Simpan Laporan Tahunan</button>
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('formTahunan').reset(); document.getElementById('thId').value=''; document.getElementById('thSubmit').textContent='Simpan Laporan Tahunan';">Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="data-table-wrapper">
+            <div class="data-table-header">
+              <h3>📋 Data Laporan Tahunan</h3>
+              <button class="btn-export" data-export="tahunan">📥 Export CSV</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tahun</th>
+                  <th>Untung Keseluruhan</th>
+                  <th>Rugi Keseluruhan</th>
+                  <th>Untung Bisnis</th>
+                  <th>Rugi Bisnis</th>
+                  <th>Untung Kerjasama</th>
+                  <th>Rugi Kerjasama</th>
+                  <th>Target</th>
+                  <th>Evaluasi</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tahunanTable">
+                <tr class="empty-row"><td colspan="10">Belum ada laporan tahunan.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ==================== CHAT ==================== -->
+        <section id="pageChat" class="page-section">
+          <div class="data-form" id="chatForm" style="padding: 16px 20px; display: flex; gap: 10px; align-items: flex-start;">
+            <div style="flex: 1;">
+              <input type="text" class="form-input" id="chatInput" placeholder="Ketik pesan..." style="width: 100%;">
+            </div>
+            <button type="button" class="btn btn-gold" id="chatSendBtn" style="width: auto; white-space: nowrap; padding: 12px 20px;">Kirim</button>
+          </div>
+          <div class="data-table-wrapper">
+            <div class="data-table-header">
+              <h3>💬 Pesan Terbaru</h3>
+              <span style="font-size: 12px; color: var(--text-muted);">Maks 10 pesan/menit/akun</span>
+            </div>
+            <div id="chatContainer" style="max-height: 500px; overflow-y: auto;">
+              <div style="text-align: center; padding: 40px; color: var(--text-muted);">Belum ada pesan.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== ANGGOTA ==================== -->
+        <section id="pageAnggota" class="page-section">
+          <div class="data-table-wrapper">
+            <div class="data-table-header">
+              <h3>👥 Daftar Anggota</h3>
+              <span style="font-size: 12px; color: var(--text-muted);">Status online diperbarui setiap 2 detik</span>
+            </div>
+            <div id="anggotaContainer">
+              <div style="text-align: center; padding: 40px; color: var(--text-muted);">Memuat...</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== AKTIVITAS ==================== -->
+        <section id="pageAktivitas" class="page-section">
+          <div class="data-table-wrapper">
+            <div class="data-table-header">
+              <h3>📜 Log Aktivitas</h3>
+              <span style="font-size: 12px; color: var(--text-muted);">Riwayat lihat, tambah, edit, dan hapus</span>
+            </div>
+            <div id="aktivitasContainer">
+              <div style="text-align: center; padding: 40px; color: var(--text-muted);">Memuat...</div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== MODAL ==================== -->
+  <div id="modalOverlay" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Detail</h3>
+        <button id="modalClose" class="modal-close">&times;</button>
+      </div>
+      <div id="modalBody"></div>
+      <form id="modalForm" style="display: none;">
+        <div class="form-actions">
+          <button type="submit" class="btn btn-gold">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
