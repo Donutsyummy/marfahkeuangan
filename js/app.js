@@ -56,24 +56,27 @@ const App = {
     const password = document.getElementById('password').value.trim();
     const errorEl = document.getElementById('loginError');
 
-    const { data: userData, error: userError } = await supabase.from('users').select('*').eq('username', username).single();
-    if (userError || !userData) {
-      errorEl.textContent = userError ? 'Cari user gagal: ' + userError.message : 'Username tidak ditemukan!';
+    if (!username || !password) {
+      errorEl.textContent = 'Isi username dan password!';
       errorEl.style.display = 'block';
       return;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email: userData.auth_id ? username + '@laporanmrfh.local' : username, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email: username + '@laporanmrfh.local', password });
     if (error) {
       errorEl.textContent = 'Login gagal: ' + error.message;
       errorEl.style.display = 'block';
       return;
     }
 
-    await this.loadUser(userData.auth_id);
+    await this.loadUser(data.user.id);
     if (this.user) {
       errorEl.style.display = 'none';
       this.showApp();
+    } else {
+      errorEl.textContent = 'Akun tidak ditemukan di sistem.';
+      errorEl.style.display = 'block';
+      await supabase.auth.signOut();
     }
   },
 
