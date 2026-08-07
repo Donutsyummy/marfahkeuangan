@@ -1,4 +1,4 @@
-const App = {
+﻿const App = {
   user: null,
   data: {},
   chatChannel: null,
@@ -10,14 +10,14 @@ const App = {
   },
 
   async checkSession() {
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) return;
     await this.loadUser(session.user.id);
     if (this.user) this.showApp();
   },
 
   async loadUser(authId) {
-    const { data } = await supabase.from('users').select('*').eq('auth_id', authId).single();
+    const { data } = await supabaseClient.from('users').select('*').eq('auth_id', authId).single();
     if (data) {
       this.user = data;
       await this.updateLastSeen();
@@ -26,11 +26,11 @@ const App = {
   },
 
   async updateLastSeen() {
-    await supabase.from('users').update({ last_seen: new Date().toISOString() }).eq('id', this.user.id);
+    await supabaseClient.from('users').update({ last_seen: new Date().toISOString() }).eq('id', this.user.id);
   },
 
   subscribeRealtime() {
-    this.chatChannel = supabase.channel('chat_messages')
+    this.chatChannel = supabaseClient.channel('chat_messages')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, payload => {
         if (!this.data.chat) this.data.chat = [];
         this.data.chat.push(payload.new);
@@ -39,7 +39,7 @@ const App = {
       })
       .subscribe();
 
-    this.onlineChannel = supabase.channel('online_users')
+    this.onlineChannel = supabaseClient.channel('online_users')
       .on('presence', { event: 'sync' }, () => {
         const el = document.getElementById('pageAnggota');
         if (el?.classList.contains('active')) this.renderAnggota();
@@ -62,7 +62,7 @@ const App = {
       return;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email: username + '@laporanmrfh.local', password });
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email: username + '@laporanmrfh.local', password });
     if (error) {
       errorEl.textContent = 'Login gagal: ' + error.message;
       errorEl.style.display = 'block';
@@ -76,14 +76,14 @@ const App = {
     } else {
       errorEl.textContent = 'Akun tidak ditemukan di sistem.';
       errorEl.style.display = 'block';
-      await supabase.auth.signOut();
+      await supabaseClient.auth.signOut();
     }
   },
 
   handleLogout() {
-    if (this.chatChannel) { supabase.removeChannel(this.chatChannel); this.chatChannel = null; }
-    if (this.onlineChannel) { supabase.removeChannel(this.onlineChannel); this.onlineChannel = null; }
-    supabase.auth.signOut();
+    if (this.chatChannel) { supabaseClient.removeChannel(this.chatChannel); this.chatChannel = null; }
+    if (this.onlineChannel) { supabaseClient.removeChannel(this.onlineChannel); this.onlineChannel = null; }
+    supabaseClient.auth.signOut();
     this.user = null;
     this.data = {};
     document.getElementById('loginPage').style.display = 'flex';
@@ -162,7 +162,7 @@ const App = {
   getToday() { return new Date().toISOString().split('T')[0]; },
 
   logActivity(action, kategori, detail) {
-    supabase.from('aktivitas').insert({
+    supabaseClient.from('aktivitas').insert({
       action, kategori, detail,
       nama: this.user?.name || 'Sistem',
       waktu: new Date().toISOString(),
@@ -173,14 +173,14 @@ const App = {
   async updateBadges() {
     const tables = ['penjualan', 'kas', 'kebutuhan', 'kerjasama', 'bulanan', 'tahunan'];
     for (const table of tables) {
-      const { count } = await supabase.from(table).select('*', { count: 'exact', head: true });
+      const { count } = await supabaseClient.from(table).select('*', { count: 'exact', head: true });
       const badge = document.querySelector(`.nav-badge[data-page="${table}"]`);
       if (badge && count !== null) badge.textContent = count;
     }
   },
 
   async fetchData(type) {
-    const { data, error } = await supabase.from(type).select('*').order('id', { ascending: false });
+    const { data, error } = await supabaseClient.from(type).select('*').order('id', { ascending: false });
     if (!error) this.data[type] = data || [];
   },
 
@@ -213,7 +213,7 @@ const App = {
 
     const totalUang = (totalPenjualan - rugiPenjualan) + (totalKerjasama - rugiKerjasama) + kasSaldo;
 
-    const { data: setting } = await supabase.from('settings').select('value').eq('key', 'total_uang_manual').single();
+    const { data: setting } = await supabaseClient.from('settings').select('value').eq('key', 'total_uang_manual').single();
     const manualVal = setting?.value ? parseInt(setting.value) : null;
     const isManual = manualVal !== null;
     const finalTotal = isManual ? manualVal : totalUang;
@@ -239,18 +239,18 @@ const App = {
   },
 
   async editTotalUang() {
-    const { data: setting } = await supabase.from('settings').select('value').eq('key', 'total_uang_manual').single();
+    const { data: setting } = await supabaseClient.from('settings').select('value').eq('key', 'total_uang_manual').single();
     const current = setting?.value || '';
     const input = prompt('Masukkan Total Uang Keseluruhan (manual):\n(Kosongkan untuk kembali ke kalkulasi otomatis)', current);
     if (input === null) return;
     const trimmed = input.trim();
     if (trimmed === '') {
-      await supabase.from('settings').update({ value: null }).eq('key', 'total_uang_manual');
+      await supabaseClient.from('settings').update({ value: null }).eq('key', 'total_uang_manual');
       this.logActivity('Mengedit', 'Total Uang', 'Mengembalikan total ke kalkulasi otomatis');
     } else {
       const val = parseInt(trimmed.replace(/[^0-9]/g, ''));
       if (isNaN(val) || val < 0) { alert('Masukkan angka yang valid!'); return; }
-      await supabase.from('settings').update({ value: String(val) }).eq('key', 'total_uang_manual');
+      await supabaseClient.from('settings').update({ value: String(val) }).eq('key', 'total_uang_manual');
       this.logActivity('Mengedit', 'Total Uang', 'Mengubah total ke Rp ' + Number(val).toLocaleString('id-ID'));
     }
     this.renderDashboard();
@@ -268,8 +268,8 @@ const App = {
       created_by: this.user?.id
     };
     const { error } = id
-      ? await supabase.from('penjualan').update(entry).eq('id', id)
-      : await supabase.from('penjualan').insert(entry);
+      ? await supabaseClient.from('penjualan').update(entry).eq('id', id)
+      : await supabaseClient.from('penjualan').insert(entry);
     if (error) { alert('Gagal menyimpan!'); return; }
     this.logActivity(id ? 'Mengedit' : 'Menambah', 'Penjualan', (id ? 'Mengedit' : 'Menambah') + ' data penjualan: ' + entry.produk);
     document.getElementById('formPenjualan').reset();
@@ -296,8 +296,8 @@ const App = {
       '<td class="text-danger">' + this.formatRupiah(item.rugi) + '</td>' +
       '<td>' + (item.evaluasi || '-') + '</td>' +
       '<td class="actions-cell">' + (canEdit ?
-        '<button class="btn-icon" onclick="App.editPenjualan(' + item.id + ')" title="Edit">✏️</button>' +
-        '<button class="btn-icon" onclick="App.deletePenjualan(' + item.id + ')" title="Hapus">🗑️</button>' : '') +
+        '<button class="btn-icon" onclick="App.editPenjualan(' + item.id + ')" title="Edit">âœï¸</button>' +
+        '<button class="btn-icon" onclick="App.deletePenjualan(' + item.id + ')" title="Hapus">ðŸ—‘ï¸</button>' : '') +
       '</td></tr>').join('');
   },
 
@@ -318,7 +318,7 @@ const App = {
   async deletePenjualan(id) {
     if (!confirm('Hapus data penjualan ini?')) return;
     const item = (this.data.penjualan || []).find(d => d.id === id);
-    const { error } = await supabase.from('penjualan').delete().eq('id', id);
+    const { error } = await supabaseClient.from('penjualan').delete().eq('id', id);
     if (error) { alert('Gagal menghapus!'); return; }
     this.logActivity('Menghapus', 'Penjualan', 'Menghapus data penjualan: ' + (item?.produk || ''));
     await this.fetchData('penjualan');
@@ -337,8 +337,8 @@ const App = {
       created_by: this.user?.id
     };
     const { error } = id
-      ? await supabase.from('kebutuhan').update(entry).eq('id', id)
-      : await supabase.from('kebutuhan').insert(entry);
+      ? await supabaseClient.from('kebutuhan').update(entry).eq('id', id)
+      : await supabaseClient.from('kebutuhan').insert(entry);
     if (error) { alert('Gagal menyimpan!'); return; }
     this.logActivity(id ? 'Mengedit' : 'Menambah', 'Kebutuhan', (id ? 'Mengedit' : 'Menambah') + ' data kebutuhan');
     document.getElementById('formKebutuhan').reset();
@@ -364,8 +364,8 @@ const App = {
       '<td>' + (item.kerjasama_perlu || '-') + '</td>' +
       '<td>' + (item.kerjasama_untuk || '-') + '</td>' +
       '<td class="actions-cell">' + (canEdit ?
-        '<button class="btn-icon" onclick="App.editKebutuhan(' + item.id + ')" title="Edit">✏️</button>' +
-        '<button class="btn-icon" onclick="App.deleteKebutuhan(' + item.id + ')" title="Hapus">🗑️</button>' : '') +
+        '<button class="btn-icon" onclick="App.editKebutuhan(' + item.id + ')" title="Edit">âœï¸</button>' +
+        '<button class="btn-icon" onclick="App.deleteKebutuhan(' + item.id + ')" title="Hapus">ðŸ—‘ï¸</button>' : '') +
       '</td></tr>').join('');
   },
 
@@ -384,7 +384,7 @@ const App = {
 
   async deleteKebutuhan(id) {
     if (!confirm('Hapus data kebutuhan ini?')) return;
-    const { error } = await supabase.from('kebutuhan').delete().eq('id', id);
+    const { error } = await supabaseClient.from('kebutuhan').delete().eq('id', id);
     if (error) { alert('Gagal menghapus!'); return; }
     this.logActivity('Menghapus', 'Kebutuhan', 'Menghapus data kebutuhan');
     await this.fetchData('kebutuhan');
@@ -402,8 +402,8 @@ const App = {
       created_by: this.user?.id
     };
     const { error } = id
-      ? await supabase.from('kas').update(entry).eq('id', id)
-      : await supabase.from('kas').insert(entry);
+      ? await supabaseClient.from('kas').update(entry).eq('id', id)
+      : await supabaseClient.from('kas').insert(entry);
     if (error) { alert('Gagal menyimpan!'); return; }
     this.logActivity(id ? 'Mengedit' : 'Menambah', 'Kas', (id ? 'Mengedit' : 'Menambah') + ' kas: ' + entry.keterangan + ' (' + (entry.tipe === 'masuk' ? '+' : '-') + ' Rp ' + entry.jumlah.toLocaleString('id-ID') + ')');
     document.getElementById('formKas').reset();
@@ -432,8 +432,8 @@ const App = {
       '<td>' + this.formatRupiah(item.jumlah) + '</td>' +
       '<td><span class="badge ' + (item.tipe === 'masuk' ? 'badge-profit' : 'badge-loss') + '">' + (item.tipe === 'masuk' ? 'Pemasukan' : 'Pengeluaran') + '</span></td>' +
       '<td class="actions-cell">' + (canEdit ?
-        '<button class="btn-icon" onclick="App.editKas(' + item.id + ')" title="Edit">✏️</button>' +
-        '<button class="btn-icon" onclick="App.deleteKas(' + item.id + ')" title="Hapus">🗑️</button>' : '') +
+        '<button class="btn-icon" onclick="App.editKas(' + item.id + ')" title="Edit">âœï¸</button>' +
+        '<button class="btn-icon" onclick="App.deleteKas(' + item.id + ')" title="Hapus">ðŸ—‘ï¸</button>' : '') +
       '</td></tr>').join('');
 
     const saldoEl = document.getElementById('kasSaldo');
@@ -457,7 +457,7 @@ const App = {
   async deleteKas(id) {
     if (!confirm('Hapus data kas ini?')) return;
     const item = (this.data.kas || []).find(d => d.id === id);
-    const { error } = await supabase.from('kas').delete().eq('id', id);
+    const { error } = await supabaseClient.from('kas').delete().eq('id', id);
     if (error) { alert('Gagal menghapus!'); return; }
     this.logActivity('Menghapus', 'Kas', 'Menghapus kas: ' + (item?.keterangan || ''));
     await this.fetchData('kas');
@@ -475,8 +475,8 @@ const App = {
       created_by: this.user?.id
     };
     const { error } = id
-      ? await supabase.from('kerjasama').update(entry).eq('id', id)
-      : await supabase.from('kerjasama').insert(entry);
+      ? await supabaseClient.from('kerjasama').update(entry).eq('id', id)
+      : await supabaseClient.from('kerjasama').insert(entry);
     if (error) { alert('Gagal menyimpan!'); return; }
     this.logActivity(id ? 'Mengedit' : 'Menambah', 'Kerjasama', (id ? 'Mengedit' : 'Menambah') + ' data kerjasama');
     document.getElementById('formKerjasama').reset();
@@ -501,8 +501,8 @@ const App = {
       '<td class="text-gold">' + this.formatRupiah(item.bagi_hasil) + '</td>' +
       '<td class="text-danger">' + this.formatRupiah(item.rugi) + '</td>' +
       '<td class="actions-cell">' + (canEdit ?
-        '<button class="btn-icon" onclick="App.editKerjasama(' + item.id + ')" title="Edit">✏️</button>' +
-        '<button class="btn-icon" onclick="App.deleteKerjasama(' + item.id + ')" title="Hapus">🗑️</button>' : '') +
+        '<button class="btn-icon" onclick="App.editKerjasama(' + item.id + ')" title="Edit">âœï¸</button>' +
+        '<button class="btn-icon" onclick="App.deleteKerjasama(' + item.id + ')" title="Hapus">ðŸ—‘ï¸</button>' : '') +
       '</td></tr>').join('');
   },
 
@@ -520,7 +520,7 @@ const App = {
 
   async deleteKerjasama(id) {
     if (!confirm('Hapus data kerjasama ini?')) return;
-    const { error } = await supabase.from('kerjasama').delete().eq('id', id);
+    const { error } = await supabaseClient.from('kerjasama').delete().eq('id', id);
     if (error) { alert('Gagal menghapus!'); return; }
     this.logActivity('Menghapus', 'Kerjasama', 'Menghapus data kerjasama');
     await this.fetchData('kerjasama');
@@ -543,8 +543,8 @@ const App = {
       created_by: this.user?.id
     };
     const { error } = id
-      ? await supabase.from('bulanan').update(entry).eq('id', id)
-      : await supabase.from('bulanan').insert(entry);
+      ? await supabaseClient.from('bulanan').update(entry).eq('id', id)
+      : await supabaseClient.from('bulanan').insert(entry);
     if (error) { alert('Gagal menyimpan!'); return; }
     this.logActivity(id ? 'Mengedit' : 'Menambah', 'Bulanan', (id ? 'Mengedit' : 'Menambah') + ' laporan bulanan ' + entry.periode);
     document.getElementById('formBulanan').reset();
@@ -574,8 +574,8 @@ const App = {
       '<td>' + (item.target || '-') + '</td>' +
       '<td>' + (item.evaluasi || '-') + '</td>' +
       '<td class="actions-cell">' + (canEdit ?
-        '<button class="btn-icon" onclick="App.editBulanan(' + item.id + ')" title="Edit">✏️</button>' +
-        '<button class="btn-icon" onclick="App.deleteBulanan(' + item.id + ')" title="Hapus">🗑️</button>' : '') +
+        '<button class="btn-icon" onclick="App.editBulanan(' + item.id + ')" title="Edit">âœï¸</button>' +
+        '<button class="btn-icon" onclick="App.deleteBulanan(' + item.id + ')" title="Hapus">ðŸ—‘ï¸</button>' : '') +
       '</td></tr>').join('');
   },
 
@@ -598,7 +598,7 @@ const App = {
 
   async deleteBulanan(id) {
     if (!confirm('Hapus laporan bulanan ini?')) return;
-    const { error } = await supabase.from('bulanan').delete().eq('id', id);
+    const { error } = await supabaseClient.from('bulanan').delete().eq('id', id);
     if (error) { alert('Gagal menghapus!'); return; }
     this.logActivity('Menghapus', 'Bulanan', 'Menghapus laporan bulanan');
     await this.fetchData('bulanan');
@@ -621,8 +621,8 @@ const App = {
       created_by: this.user?.id
     };
     const { error } = id
-      ? await supabase.from('tahunan').update(entry).eq('id', id)
-      : await supabase.from('tahunan').insert(entry);
+      ? await supabaseClient.from('tahunan').update(entry).eq('id', id)
+      : await supabaseClient.from('tahunan').insert(entry);
     if (error) { alert('Gagal menyimpan!'); return; }
     this.logActivity(id ? 'Mengedit' : 'Menambah', 'Tahunan', (id ? 'Mengedit' : 'Menambah') + ' laporan tahunan ' + entry.tahun);
     document.getElementById('formTahunan').reset();
@@ -652,8 +652,8 @@ const App = {
       '<td>' + (item.target || '-') + '</td>' +
       '<td>' + (item.evaluasi || '-') + '</td>' +
       '<td class="actions-cell">' + (canEdit ?
-        '<button class="btn-icon" onclick="App.editTahunan(' + item.id + ')" title="Edit">✏️</button>' +
-        '<button class="btn-icon" onclick="App.deleteTahunan(' + item.id + ')" title="Hapus">🗑️</button>' : '') +
+        '<button class="btn-icon" onclick="App.editTahunan(' + item.id + ')" title="Edit">âœï¸</button>' +
+        '<button class="btn-icon" onclick="App.deleteTahunan(' + item.id + ')" title="Hapus">ðŸ—‘ï¸</button>' : '') +
       '</td></tr>').join('');
   },
 
@@ -676,7 +676,7 @@ const App = {
 
   async deleteTahunan(id) {
     if (!confirm('Hapus laporan tahunan ini?')) return;
-    const { error } = await supabase.from('tahunan').delete().eq('id', id);
+    const { error } = await supabaseClient.from('tahunan').delete().eq('id', id);
     if (error) { alert('Gagal menghapus!'); return; }
     this.logActivity('Menghapus', 'Tahunan', 'Menghapus laporan tahunan');
     await this.fetchData('tahunan');
@@ -744,7 +744,7 @@ const App = {
 
   async renderAktivitas() {
     const container = document.getElementById('aktivitasContainer');
-    const { data: logs, error } = await supabase.from('aktivitas').select('*').order('id', { ascending: false }).limit(100);
+    const { data: logs, error } = await supabaseClient.from('aktivitas').select('*').order('id', { ascending: false }).limit(100);
     if (error || !logs || logs.length === 0) {
       container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">' + (!logs ? 'Belum ada aktivitas tercatat.' : 'Gagal memuat aktivitas.') + '</div>';
       return;
@@ -769,7 +769,7 @@ const App = {
     const roleLabels = { admin:'Admin', editor:'Editor', viewer:'Pengamat' };
     const roleColors = { admin:'#D4AF37', editor:'#2ecc71', viewer:'#3498db' };
 
-    supabase.from('users').select('*').order('role').then(({ data: users, error }) => {
+    supabaseClient.from('users').select('*').order('role').then(({ data: users, error }) => {
       if (error || !users) return;
       const presence = this.onlineChannel?.presence?.state() || {};
       const onlineUsernames = new Set();
@@ -791,7 +791,7 @@ const App = {
           '<div style="font-size: 12px; color: ' + (roleColors[user.role] || '#999') + ';">' +
           (roleLabels[user.role] || user.role) + (user.username === this.user?.username ? ' <span style="color: var(--text-muted);">(Anda)</span>' : '') + '</div></div>' +
           '<div style="font-size: 12px; color: ' + (isOnline ? '#2ecc71' : '#555') + '; font-weight: 500; flex-shrink: 0;">' +
-          (isOnline ? '● Online' : '○ Offline') + '</div></div>';
+          (isOnline ? 'â— Online' : 'â—‹ Offline') + '</div></div>';
       }).join('');
     }).catch(() => {
       container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">Gagal memuat data anggota.</div>';
@@ -804,7 +804,7 @@ const App = {
     if (!input) return;
     const text = input.value.trim();
     if (!text) return;
-    supabase.from('chat_messages').insert({
+    supabaseClient.from('chat_messages').insert({
       text,
       username: this.user.username,
       nama: this.user.name,
@@ -886,3 +886,4 @@ const App = {
 };
 
 document.addEventListener('DOMContentLoaded', () => App.init());
+
