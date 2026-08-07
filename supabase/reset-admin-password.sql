@@ -16,4 +16,4 @@ END $$;
 UPDATE auth.users
 SET encrypted_password = crypt('admin', gen_salt('bf')),
     updated_at = now()
-WHERE email = 'admin@laporanmrfh.local';
+WHERE email = 'bluenderender@gmail.com';
