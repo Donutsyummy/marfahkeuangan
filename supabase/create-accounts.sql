@@ -3,8 +3,8 @@
 -- Jalankan di Supabase Dashboard > SQL Editor
 -- ============================================
 -- CATATAN:
---  1. Aplikasi login memakai format email: username@laporanmrf.local
---     (lihat js/app.js -> signInWithPassword(username + '@laporanmrf.local'))
+--  1. Aplikasi login memakai format email: username@laporanmrfh.local
+--     (lihat js/app.js -> signInWithPassword(username + '@laporanmrfh.local'))
 --  2. Ganti password sebelum menjalankan (bagian crypt('...', gen_salt('bf'))).
 --  3. Role yang tersedia:
 --     - admin  : bisa tambah/edit/hapus semua data
@@ -26,7 +26,7 @@ BEGIN
     v_uid_admin,
     '00000000-0000-0000-0000-000000000000',
     'authenticated', 'authenticated',
-    'admin@laporanmrf.local',
+    'admin@laporanmrfh.local',
     crypt('admin', gen_salt('bf')),
     now(), now(), now(),
     '{"provider":"email","providers":["email"]}',
@@ -50,7 +50,7 @@ BEGIN
     v_uid_viewer,
     '00000000-0000-0000-0000-000000000000',
     'authenticated', 'authenticated',
-    'viewer@laporanmrf.local',
+    'viewer@laporanmrfh.local',
     crypt('viewer', gen_salt('bf')),
     now(), now(), now(),
     '{"provider":"email","providers":["email"]}',
