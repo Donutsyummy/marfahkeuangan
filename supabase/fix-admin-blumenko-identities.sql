@@ -1,24 +1,24 @@
 -- ============================================
--- LaporanMRFH - Perbaiki Akun ADMIN bundamasmuh@gmail.com
--- Email: bundamasmuh@gmail.com / Password: bismillah
+-- LaporanMRFH - Perbaiki Akun ADMIN bluenderender@gmail.com
+-- Email: bluenderender@gmail.com / Password: faiqbaik
 -- Jalankan di Supabase Dashboard > SQL Editor
 -- ============================================
 -- CATATAN:
--- 1. Rebuild bersih akun bundamasmuh@gmail.com (auth.users + auth.identities)
---    + baris public.users (role admin).
+-- 1. Rebuild bersih akun bluenderender@gmail.com yang gagal login
+--    (auth.users + auth.identities) + baris public.users (role admin).
 -- 2. auth.identities WAJIB ada di Supabase versi baru. Tanpa baris ini,
 --    signInWithPassword akan gagal "Invalid login credentials".
 -- 3. Idempoten - aman dijalankan ulang.
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
--- ===== 1) Hapus akun lama + baris terkait (identities & public.users) =====
+-- ===== 1) Hapus akun lama + baris terkait =====
 DELETE FROM auth.identities
-WHERE user_id IN (SELECT id FROM auth.users WHERE email = 'bundamasmuh@gmail.com');
+WHERE user_id IN (SELECT id FROM auth.users WHERE email = 'bluenderender@gmail.com');
 
 DELETE FROM public.users
-WHERE auth_id IN (SELECT id FROM auth.users WHERE email = 'bundamasmuh@gmail.com');
+WHERE auth_id IN (SELECT id FROM auth.users WHERE email = 'bluenderender@gmail.com');
 
-DELETE FROM auth.users WHERE email = 'bundamasmuh@gmail.com';
+DELETE FROM auth.users WHERE email = 'bluenderender@gmail.com';
 
 DELETE FROM public.users WHERE username = 'admin';
 
@@ -29,8 +29,8 @@ INSERT INTO auth.users (id, instance_id, aud, role, email, encrypted_password,
 VALUES (gen_random_uuid(),
     '00000000-0000-0000-0000-000000000000',
     'authenticated', 'authenticated',
-    'bundamasmuh@gmail.com',
-    crypt('bismillah', gen_salt('bf')),
+    'bluenderender@gmail.com',
+    crypt('faiqbaik', gen_salt('bf')),
     now(), now(), now(),
     '{"provider":"email","providers":["email"]}',
     '{"username":"admin"}'
@@ -40,17 +40,16 @@ VALUES (gen_random_uuid(),
 INSERT INTO public.users (username, name, role, auth_id, last_seen)
 SELECT 'admin', 'Administrator', 'admin', id, now()
 FROM auth.users
-WHERE email = 'bundamasmuh@gmail.com'
+WHERE email = 'bluenderender@gmail.com'
 LIMIT 1;
 
 -- ===== 3) Buat identity email (WAJIB agar signInWithPassword berhasil) =====
--- provider_id = id user (uuid), sesuai konvensi GoTrue
 INSERT INTO auth.identities (id, user_id, identity_data, provider, provider_id, last_sign_in_at, created_at, updated_at)
 SELECT gen_random_uuid(), id,
-    jsonb_build_object('sub', id::text, 'email', 'bundamasmuh@gmail.com', 'email_verified', true),
+    jsonb_build_object('sub', id::text, 'email', 'bluenderender@gmail.com', 'email_verified', true),
     'email', id::text, now(), now(), now()
 FROM auth.users
-WHERE email = 'bundamasmuh@gmail.com'
+WHERE email = 'bluenderender@gmail.com'
 LIMIT 1;
 
 -- ===== 4) Verifikasi hasil =====
@@ -59,7 +58,7 @@ SELECT u.email, u.id AS auth_id, p.username, p.role, p.name,
 FROM auth.users u
 LEFT JOIN public.users p    ON p.auth_id = u.id
 LEFT JOIN auth.identities i ON i.user_id = u.id
-WHERE u.email = 'bundamasmuh@gmail.com';
+WHERE u.email = 'bluenderender@gmail.com';
 
 -- Harus menghasilkan 1 baris: email, auth_id, username 'admin', role 'admin',
--- provider 'email', identity_email 'bundamasmuh@gmail.com'
+-- provider 'email', identity_email 'bluenderender@gmail.com'
