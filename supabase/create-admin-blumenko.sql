@@ -6,9 +6,12 @@
 -- Catatan: email yang dipakai = bluenderender@gmail.com (bukan yang bermasalah)
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
--- Hapus email ini KALAU duplikat (aman dijalankan ulang)
+-- Bersihkan email ini + baris public.users 'admin' lama (dari akun sebelumnya)
 DELETE FROM public.users
 WHERE auth_id IN (SELECT id FROM auth.users WHERE email = 'bluenderender@gmail.com');
+
+DELETE FROM public.users WHERE username = 'admin';
+
 DELETE FROM auth.users WHERE email = 'bluenderender@gmail.com';
 
 -- Buat akun auth baru yang bersih
