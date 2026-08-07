@@ -62,7 +62,8 @@
       return;
     }
 
-    const { data, error } = await supabaseClient.auth.signInWithPassword({ email: username + '@laporanmrfh.local', password });
+    const email = username.includes('@') ? username : username + '@laporanmrfh.local';
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) {
       errorEl.textContent = 'Login gagal: ' + error.message;
       errorEl.style.display = 'block';
