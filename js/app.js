@@ -51,6 +51,13 @@
       });
   },
 
+  updateThemeIcon(theme) {
+    const btn = document.getElementById('themeToggle');
+    if (btn) {
+      btn.textContent = theme === 'dark' ? '☀️' : '🌑';
+    }
+  },
+
   async handleLogin() {
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
@@ -851,6 +858,20 @@
       this.handleLogin();
     });
     document.getElementById('logoutBtn').addEventListener('click', () => { this.handleLogout(); });
+    
+    // Theme toggle dark mode
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('marfah-theme', newTheme);
+    });
+    
+    // Load saved theme
+    const savedTheme = localStorage.getItem('marfah-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    this.updateThemeIcon(savedTheme);
+    
     document.getElementById('mobileMenuBtn').addEventListener('click', () => {
       document.getElementById('sidebar').classList.toggle('mobile-open');
       document.getElementById('sidebarOverlay').classList.toggle('active');
