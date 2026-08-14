@@ -147,8 +147,8 @@
       case 'penjualan': this.renderPenjualan(); break;
       case 'kebutuhan': this.renderKebutuhan(); break;
       case 'kerjasama': this.renderKerjasama(); break;
-      case 'bulanan': this.renderBulanan(); break;
-      case 'tahunan': this.renderTahunan(); break;
+      case 'bulanan': this.renderBulanan(); this.renderBulananSummary(); break;
+      case 'tahunan': this.renderTahunan(); this.renderTahunanSummary(); break;
       case 'kas': this.renderKas(); break;
       case 'anggota': this.renderAnggota(); break;
       case 'chat': this.renderChat(); break;
@@ -690,6 +690,56 @@
     await this.fetchData('tahunan');
     this.renderTahunan();
     this.renderDashboard();
+  },
+
+  renderBulananSummary() {
+    const data = this.data.bulanan || [];
+    if (data.length === 0) {
+      ['blSummaryUntung', 'blSummaryRugi', 'blSummaryNetto'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = 'Rp 0';
+      });
+      return;
+    }
+    const untung = data.reduce((s, d) => s + (parseInt(d.untung_keseluruhan) || 0), 0);
+    const rugi = data.reduce((s, d) => s + (parseInt(d.rugi_keseluruhan) || 0), 0);
+    const netto = untung - rugi;
+
+    const elUntung = document.getElementById('blSummaryUntung');
+    const elRugi = document.getElementById('blSummaryRugi');
+    const elNetto = document.getElementById('blSummaryNetto');
+
+    if (elUntung) elUntung.textContent = this.formatRupiah(untung);
+    if (elRugi) elRugi.textContent = this.formatRupiah(rugi);
+    if (elNetto) {
+      elNetto.textContent = this.formatRupiah(netto);
+      elNetto.className = 'recap-value ' + (netto >= 0 ? 'neutral' : 'negative');
+    }
+  },
+
+  renderTahunanSummary() {
+    const data = this.data.tahunan || [];
+    if (data.length === 0) {
+      ['thSummaryUntung', 'thSummaryRugi', 'thSummaryNetto'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = 'Rp 0';
+      });
+      return;
+    }
+    const untung = data.reduce((s, d) => s + (parseInt(d.untung_keseluruhan) || 0), 0);
+    const rugi = data.reduce((s, d) => s + (parseInt(d.rugi_keseluruhan) || 0), 0);
+    const netto = untung - rugi;
+
+    const elUntung = document.getElementById('thSummaryUntung');
+    const elRugi = document.getElementById('thSummaryRugi');
+    const elNetto = document.getElementById('thSummaryNetto');
+
+    if (elUntung) elUntung.textContent = this.formatRupiah(untung);
+    if (elRugi) elRugi.textContent = this.formatRupiah(rugi);
+    if (elNetto) {
+      elNetto.textContent = this.formatRupiah(netto);
+      elNetto.className = 'recap-value ' + (netto >= 0 ? 'neutral' : 'negative');
+    }
   },
 
   openModal(type, data) {

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Marfah Keuangan - Dashboard</title>
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/style-apple.css">
+  <link rel="stylesheet" href="css/style-dark.css">
 </head>
 <body>
 
@@ -129,48 +129,72 @@
 
         <!-- ==================== DASHBOARD ==================== -->
         <section id="pageDashboard" class="page-section active">
-          <div class="stat-card gold-gradient" style="margin-bottom: 24px; border-radius: 20px;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 8px;">
-              <span style="font-size: 14px; color: white; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;" id="totalUangLabel">Total Uang Keseluruhan</span>
-              <button id="editTotalUangBtn" class="btn-icon" style="display:none; padding: 4px 8px; font-size: 14px; border-color: rgba(255,255,255,0.3);" title="Ubah total uang">✏️</button>
+          <!-- Premium Total Card -->
+          <div class="stat-card gold-gradient" style="margin-bottom: 32px; border-radius: 24px; text-align: center;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap;">
+              <span style="font-size: 14px; color: white; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;" id="totalUangLabel">Total Uang Keseluruhan</span>
+              <button id="editTotalUangBtn" class="btn-icon" style="display:none; padding: 6px 10px; font-size: 14px; border-color: rgba(255,255,255,0.3);" title="Ubah total uang">✏️</button>
             </div>
-            <div style="font-size: 48px; font-weight: 700; font-family: 'Playfair Display', serif; color: white; letter-spacing: -1px;" id="statTotalUang">Rp 0</div>
-            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.8); margin-top: 8px;">Dari penjualan & kerjasama</div>
+            <div style="font-size: 56px; font-weight: 800; font-family: 'Playfair Display', serif; color: white; letter-spacing: -1px; margin: 12px 0 6px;" id="statTotalUang">Rp 0</div>
+            <div style="font-size: 14px; color: rgba(255, 255, 255, 0.9);">Dari penjualan & kerjasama</div>
           </div>
+
+          <!-- Financial Overview Grid -->
           <div class="dashboard-grid">
             <div class="stat-card">
-              <div class="stat-icon">💰</div>
-              <div class="stat-value" id="statPenjualan">Rp 0</div>
-              <div class="stat-label">Total Untung Penjualan</div>
-              <div class="stat-desc">Dari seluruh transaksi penjualan</div>
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(52, 199, 89, 0.12); display: flex; align-items: center; justify-content: center; font-size: 20px;">💰</div>
+                <div style="flex: 1;">
+                  <div class="stat-label">Total Untung Penjualan</div>
+                  <div class="stat-desc">Dari seluruh transaksi penjualan</div>
+                </div>
+              </div>
+              <div class="stat-value" id="statPenjualan" style="font-size: 32px;">Rp 0</div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">🤝</div>
-              <div class="stat-value" id="statKerjasama">Rp 0</div>
-              <div class="stat-label">Total Untung Kerjasama</div>
-              <div class="stat-desc">Dari seluruh kerjasama</div>
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(212, 175, 55, 0.12); display: flex; align-items: center; justify-content: center; font-size: 20px;">🤝</div>
+                <div style="flex: 1;">
+                  <div class="stat-label">Total Untung Kerjasama</div>
+                  <div class="stat-desc">Dari seluruh kerjasama</div>
+                </div>
+              </div>
+              <div class="stat-value" id="statKerjasama" style="font-size: 32px;">Rp 0</div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">📋</div>
-              <div class="stat-value" id="statKebutuhan">0 kebutuhan</div>
-              <div class="stat-label">Kebutuhan Tercatat</div>
-              <div class="stat-desc">Bisnis & Kerjasama</div>
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(115, 128, 144, 0.12); display: flex; align-items: center; justify-content: center; font-size: 20px;">📋</div>
+                <div style="flex: 1;">
+                  <div class="stat-label">Kebutuhan Tercatat</div>
+                  <div class="stat-desc">Bisnis & Kerjasama</div>
+                </div>
+              </div>
+              <div class="stat-value" id="statKebutuhan">0</div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">🏦</div>
-              <div class="stat-value" style="color: var(--apple-gold);" id="statKasSaldo">Rp 0</div>
-              <div class="stat-label">Saldo Kas</div>
-              <div class="stat-desc">Pemasukan - Pengeluaran</div>
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(52, 199, 89, 0.12); display: flex; align-items: center; justify-content: center; font-size: 20px;">🏦</div>
+                <div style="flex: 1;">
+                  <div class="stat-label">Saldo Kas</div>
+                  <div class="stat-desc">Pemasukan - Pengeluaran</div>
+                </div>
+              </div>
+              <div class="stat-value" id="statKasSaldo" style="font-size: 32px;">Rp 0</div>
             </div>
-            <div class="stat-card">
-              <div class="stat-icon">📊</div>
-              <div class="stat-value" id="statTotal">0 entri</div>
-              <div class="stat-label">Total Entri</div>
-              <div class="stat-desc">Semua kategori laporan</div>
+            <div class="stat-card" style="grid-column: 1 / -1;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(255, 165, 0, 0.12); display: flex; align-items: center; justify-content: center; font-size: 20px;">📊</div>
+                <div style="flex: 1;">
+                  <div class="stat-label">Total Entri</div>
+                  <div class="stat-desc">Semua kategori laporan</div>
+                </div>
+              </div>
+              <div class="stat-value" id="statTotal">0</div>
             </div>
           </div>
 
-          <h3 style="margin: 32px 0 16px; font-size: 20px; font-weight: 600; color: var(--apple-text);">Kategori Laporan</h3>
+          <!-- Category Cards -->
+          <h3 style="margin: 40px 0 20px; font-size: 20px; font-weight: 700; color: var(--text);">Kategori Laporan</h3>
           <div class="category-grid">
             <div class="category-card" data-page="penjualan">
               <div class="cat-icon">💰</div>
@@ -274,6 +298,7 @@
 
         <!-- ==================== KAS ==================== -->
         <section id="pageKas" class="page-section">
+          <!-- Kas Summary Cards -->
           <div class="recap-grid" style="grid-template-columns: repeat(3, 1fr);">
             <div class="recap-item">
               <div class="recap-label">Total Pemasukan</div>
@@ -345,7 +370,7 @@
 
         <!-- ==================== KEBUTUHAN ==================== -->
         <section id="pageKebutuhan" class="page-section">
-          <div class="data-form">
+          <div class="data-form" style="margin-bottom: 32px;">
             <h3>📝 Form Kebutuhan</h3>
             <form id="formKebutuhan">
               <input type="hidden" id="kbId" value="">
@@ -405,7 +430,7 @@
 
         <!-- ==================== KERJASAMA ==================== -->
         <section id="pageKerjasama" class="page-section">
-          <div class="data-form">
+          <div class="data-form" style="margin-bottom: 32px;">
             <h3>📝 Form Kerjasama</h3>
             <form id="formKerjasama">
               <input type="hidden" id="ksId" value="">
@@ -460,7 +485,22 @@
 
         <!-- ==================== BULANAN ==================== -->
         <section id="pageBulanan" class="page-section">
-          <div class="data-form">
+          <!-- Premium Summary Cards for Reports -->
+          <div class="recap-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 32px;">
+            <div class="recap-item">
+              <div class="recap-label">Untung Keseluruhan</div>
+              <div class="recap-value positive" id="blSummaryUntung">Rp 0</div>
+            </div>
+            <div class="recap-item">
+              <div class="recap-label">Rugi Keseluruhan</div>
+              <div class="recap-value negative" id="blSummaryRugi">Rp 0</div>
+            </div>
+            <div class="recap-item">
+              <div class="recap-label">Netto</div>
+              <div class="recap-value neutral" id="blSummaryNetto">Rp 0</div>
+            </div>
+          </div>
+          <div class="data-form" style="margin-bottom: 32px;">
             <h3>📝 Form Laporan Bulanan</h3>
             <form id="formBulanan">
               <input type="hidden" id="blId" value="">
@@ -542,7 +582,22 @@
 
         <!-- ==================== TAHUNAN ==================== -->
         <section id="pageTahunan" class="page-section">
-          <div class="data-form">
+          <!-- Premium Summary Cards for Reports -->
+          <div class="recap-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 32px;">
+            <div class="recap-item">
+              <div class="recap-label">Untung Keseluruhan</div>
+              <div class="recap-value positive" id="thSummaryUntung">Rp 0</div>
+            </div>
+            <div class="recap-item">
+              <div class="recap-label">Rugi Keseluruhan</div>
+              <div class="recap-value negative" id="thSummaryRugi">Rp 0</div>
+            </div>
+            <div class="recap-item">
+              <div class="recap-label">Netto</div>
+              <div class="recap-value neutral" id="thSummaryNetto">Rp 0</div>
+            </div>
+          </div>
+          <div class="data-form" style="margin-bottom: 32px;">
             <h3>📝 Form Laporan Tahunan</h3>
             <form id="formTahunan">
               <input type="hidden" id="thId" value="">

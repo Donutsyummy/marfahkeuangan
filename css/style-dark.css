@@ -1,0 +1,89 @@
+/* Marfah Keuangan — Premium Apple-Style Redesign V2 (Dark Mode Supplement) */
+/* Functionality: 100% preserved | Visual: radically better */
+
+[data-theme="dark"] {
+  --bg: #000000;
+  --surface: #1C1C1E;
+  --surface-2: #2C2C2E;
+  --text: #F5F5F7;
+  --text-muted: #AEAEB2;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-light: rgba(255, 255, 255, 0.04);
+}
+
+/* ==================== DASHBOARD DARK MODE ==================== */
+[data-theme="dark"] .dashboard-grid .stat-card {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+[data-theme="dark"] .dashboard-grid .stat-card::after {
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+}
+
+[data-theme="dark"] .category-card {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+[data-theme="dark"] .category-card:hover {
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.16), 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* ==================== FORMS DARK MODE ==================== */
+[data-theme="dark"] .data-form {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+[data-theme="dark"] .data-form h3 {
+  border-bottom-color: var(--border-light);
+}
+[data-theme="dark"] .form-actions {
+  border-top-color: var(--border-light);
+}
+
+/* ==================== TABLES DARK MODE ==================== */
+[data-theme="dark"] .data-table-wrapper {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+[data-theme="dark"] .data-table th {
+  background: var(--surface-2);
+  border-bottom-color: var(--border);
+}
+[data-theme="dark"] .data-table td {
+  border-bottom-color: var(--border);
+}
+[data-theme="dark"] .data-table tr:hover td {
+  background: var(--surface-2);
+}
+
+/* ==================== RECAP DARK MODE ==================== */
+[data-theme="dark"] .recap-item {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ==================== LOGIN DARK MODE ==================== */
+[data-theme="dark"] .login-card {
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.24), 0 8px 16px rgba(0, 0, 0, 0.16);
+}
+
+/* ==================== MODAL DARK MODE ==================== */
+[data-theme="dark"] .modal {
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.24);
+}
+
+/* ==================== NAVIGATION DARK MODE ==================== */
+[data-theme="dark"] .sidebar-user-avatar {
+  background: var(--gold);
+}
+
+[data-theme="dark"] .sidebar-footer .btn-logout:hover {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+/* ==================== NAV ITEM DARK MODE ==================== */
+[data-theme="dark"] .nav-item.active {
+  background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+  color: white;
+}
+
+/* ==================== THEME TOGGLE DARK MODE ==================== */
+[data-theme="dark"] .theme-toggle:hover {
+  background: var(--surface-2);
+}
